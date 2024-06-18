@@ -1,22 +1,32 @@
 package com.keto.accounts.controller;
 
-
+import com.keto.accounts.service.IAccountsService;
+import com.keto.accounts.utils.constants.AccountsConstants;
+import com.keto.accounts.utils.dto.CustomerDto;
+import com.keto.accounts.utils.dto.ResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping(path = "/api/accounts", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AccountsController {
 
-    @GetMapping("/sayHello")
-    public ResponseEntity<String> sayHello(){
-        return new ResponseEntity<>("Hello world", HttpStatus.OK);
+    @Autowired
+    private IAccountsService iAccountsService;
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
+        iAccountsService.createAccount(customerDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED) //header
+                .body(new ResponseDto(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));//body
     }
-
-
-
-
+    @GetMapping("/fetch")
+    public ResponseEntity<CustomerDto> findAccountDetails(@RequestParam String mobileNumber){
+        CustomerDto customerDto= iAccountsService.findAccountDetails(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(customerDto);
+    }
 }
