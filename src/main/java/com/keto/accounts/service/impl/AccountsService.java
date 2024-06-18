@@ -52,7 +52,6 @@ public class AccountsService implements IAccountsService {
         customer.setCreatedAt(LocalDateTime.now());
         customer.setCreatedBy("Annoumous");
         Customer savedCustomer = customerRepository.save(customer);
-        System.out.println(createNewAccount(savedCustomer).getBranchAddress());
         accountRepository.save(createNewAccount(savedCustomer));
     }
 
@@ -75,7 +74,6 @@ public class AccountsService implements IAccountsService {
         customerDto.setAccountsDto(AccountMapper.mapToAccountsDto(account,new AccountsDto()));
         return customerDto;
     }
-
     /**
      * Creates a new account for the given customer.
      *
@@ -86,8 +84,8 @@ public class AccountsService implements IAccountsService {
         log.info("start acct");
         Account account=new Account();
         account.setCustomerId(customer.getCustomerId());
-        Long randomAccountNumber = 1000000000L + new Random().nextInt(900000000);
-        System.out.println("=>>>>>>"+randomAccountNumber);
+        Random random = new Random();
+        Long randomAccountNumber = 1000000000L + random.nextInt(900000000);
         account.setAccountNumber(randomAccountNumber);
         account.setAccountType(AccountsConstants.SAVINGS);
         account.setBranchAddress(AccountsConstants.ADDRESS);
@@ -95,4 +93,34 @@ public class AccountsService implements IAccountsService {
         account.setCreatedBy("Annoumous");
         return account;
     }
+    /**
+     * Updates account and associated customer information if provided.
+     *
+     * @param customerDto The CustomerDto containing account and customer information.
+     * @return true if account is updated successfully, false otherwise.
+     */
+    @Override
+    public boolean updateAccount(CustomerDto customerDto) {
+
+        boolean isUpdated = false;
+        AccountsDto accountsDto = customerDto.getAccountsDto();
+        if (accountsDto!=null){
+            Account account =
+                    accountRepository.findById(accountsDto.getAccountNumber())
+                    .orElseThrow(() -> new ResourseNotFoundException("Account", "AccountNumber", accountsDto.getAccountNumber().toString()));
+
+            AccountMapper.mapToAccounts(accountsDto,account);
+            account = accountRepository.save(account);
+
+            Long customerId = account.getCustomerId();
+            Customer customer = customerRepository.findById(customerId)
+                    .orElseThrow(() -> new ResourseNotFoundException("Customer", "customerId", customerId.toString()));
+
+            CustomerMapper.mapToCustomer(customerDto,customer);
+            customerRepository.save(customer);
+            isUpdated = true;
+        }
+        return isUpdated;
+    }
+
 }
