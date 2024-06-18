@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * AccountsController.java
+ * Author: Kiransing bhat
+ * Description: This class implements AccountsController
+ **/
 @RestController
 @RequestMapping(path = "/api/accounts", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AccountsController {
