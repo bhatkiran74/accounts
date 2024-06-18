@@ -60,9 +60,22 @@ public class AccountsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(AccountsConstants.STATUS_500,AccountsConstants.MESSAGE_500));
         }
     }
-
-//    @DeleteMapping
-//    public ResponseEntity<ResponseDto> deleteAccount()
+    /**
+     * Endpoint to delete an account by mobile number.
+     *
+     * @param mobileNumber The mobile number of the customer whose account is to be deleted.
+     * @return ResponseEntity with status 200 (OK) and a success response if deletion is successful,
+     *         or status 417 (Expectation Failed) and an error response if deletion fails.
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDto> deleteAccount(@RequestParam String mobileNumber){
+       boolean isDeleted = iAccountsService.deleteAccount(mobileNumber);
+        if (isDeleted){
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountsConstants.STATUS_200,AccountsConstants.MESSAGE_200));
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(AccountsConstants.STATUS_417,AccountsConstants.MESSAGE_417_DELETE));
+        }
+    }
 
 
 }
