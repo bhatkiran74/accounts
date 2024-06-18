@@ -20,7 +20,12 @@ public class AccountsController {
 
     @Autowired
     private IAccountsService iAccountsService;
-
+    /**
+     * Endpoint to create a new account based on the provided CustomerDto.
+     *
+     * @param customerDto The CustomerDto containing customer information.
+     * @return ResponseEntity with status 201 (Created) and a response body indicating success.
+     */
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
         iAccountsService.createAccount(customerDto);
@@ -28,11 +33,24 @@ public class AccountsController {
                 .status(HttpStatus.CREATED) //header
                 .body(new ResponseDto(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));//body
     }
+    /**
+     * Endpoint to fetch account details for a customer by mobile number.
+     *
+     * @param mobileNumber The mobile number of the customer.
+     * @return ResponseEntity with status 200 (OK) and the CustomerDto containing customer and account details.
+     */
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDto> findAccountDetails(@RequestParam String mobileNumber){
         CustomerDto customerDto= iAccountsService.findAccountDetails(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
+    /**
+     * Endpoint to update account details based on the provided CustomerDto.
+     *
+     * @param customerDto The CustomerDto containing updated account and customer information.
+     * @return ResponseEntity with status 200 (OK) and a success response if update is successful,
+     *         or status 500 (Internal Server Error) and an error response if update fails.
+     */
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateAccountDetails(@RequestBody CustomerDto customerDto){
         boolean isUpdated = iAccountsService.updateAccount(customerDto);
@@ -42,4 +60,9 @@ public class AccountsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(AccountsConstants.STATUS_500,AccountsConstants.MESSAGE_500));
         }
     }
+
+//    @DeleteMapping
+//    public ResponseEntity<ResponseDto> deleteAccount()
+
+
 }
