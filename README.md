@@ -11,9 +11,7 @@ This API allows for managing employee information, including creating new employ
    - [Fetch Employee Tax Deductions](#fetch-employee-tax-deductions)
 3. [Data Models](#data-models)
 4. [Error Handling](#error-handling)
-5. [Contributing](#contributing)
-6. [License](#license)
-7. [Contact](#contact)
+5. [Contact](#contact)
 
 ## Introduction
 
